@@ -1,17 +1,44 @@
-# trying_flutter
+# Small Barcode Test
 
-A new Flutter project.
+แอป Flutter สำหรับทดลองอ่านบาร์โค้ดขนาดเล็กด้วยกล้องหลังของ iPhone XR
+แล้วแสดงชนิดบาร์โค้ด ค่า และเวลาที่อ่านสำเร็จบนหน้าจอ
 
-## Getting Started
+## ความสามารถ
 
-This project is a starting point for a Flutter application.
+- อ่าน Code 128, Code 39, Code 93, EAN-13, EAN-8, ITF-14, UPC-A,
+  UPC-E, QR Code และ Data Matrix
+- จำกัดพื้นที่ตรวจจับไว้ในกรอบกลางจอ เพื่อลดสิ่งรบกวน
+- ปรับ digital zoom, เปิดไฟฉาย และสลับกล้องได้
+- กรองการอ่านค่าซ้ำและคงผลล่าสุดไว้ให้ตรวจสอบ
 
-A few resources to get you started if this is your first Flutter project:
+## รันบน iPhone XR
 
-- [Learn Flutter](https://docs.flutter.dev/get-started/learn-flutter)
-- [Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Flutter learning resources](https://docs.flutter.dev/reference/learning-resources)
+การ build และติดตั้ง iOS ต้องใช้ macOS ที่มี Xcode และ Apple Developer signing
+จากโฟลเดอร์โปรเจกต์ให้รัน:
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+```sh
+flutter pub get
+open ios/Runner.xcworkspace
+```
+
+ใน Xcode เลือก Runner > Signing & Capabilities > Team จากนั้นเสียบ iPhone XR,
+กด Trust เครื่อง Mac และรันด้วย:
+
+```sh
+flutter run -d <device-id>
+```
+
+ดู `<device-id>` ได้จาก `flutter devices` และต้องอนุญาตสิทธิ์กล้องเมื่อเปิดแอปครั้งแรก
+Simulator ไม่เหมาะกับการทดสอบนี้ เพราะไม่ได้ใช้กล้องจริงของ iPhone XR
+
+## วิธีทดสอบบาร์โค้ดขนาดเล็ก
+
+1. พิมพ์บาร์โค้ดค่าเดียวกันหลายขนาด เช่น ความกว้าง 30, 25, 20, 15 และ 10 มม.
+2. ใช้แสงและระยะห่างคงที่ เริ่มที่ประมาณ 20 ซม. โดยยังไม่เปิด zoom
+3. วางบาร์โค้ดในกรอบและเลื่อนเข้าใกล้ช้า ๆ จนอ่านได้ บันทึกขนาด ระยะ และเวลา
+4. ทดสอบแต่ละขนาดอย่างน้อย 10 รอบ แล้วทำซ้ำโดยปรับ zoom/เปิดไฟฉาย
+5. ตรวจว่าค่าที่แสดงตรงกับค่าที่พิมพ์ ไม่ควรวัดเฉพาะว่าอ่านติดหรือไม่
+
+คุณภาพการอ่านขึ้นกับขนาดเส้นที่แคบที่สุด (module width), ความคมชัดของงานพิมพ์,
+quiet zone, แสงสะท้อน, ระยะโฟกัส และชนิดบาร์โค้ด จึงควรบันทึกตัวแปรเหล่านี้
+ควบคู่กับขนาดฉลาก

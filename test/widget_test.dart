@@ -1,30 +1,40 @@
-// This is a basic Flutter widget test.
-//
-// To perform an interaction with a widget in your test, use the WidgetTester
-// utility in the flutter_test package. For example, you can send tap and scroll
-// gestures. You can also use WidgetTester to find child widgets in the widget
-// tree, read text, and verify that the values of widget properties are correct.
-
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mobile_scanner/mobile_scanner.dart';
 
 import 'package:trying_flutter/main.dart';
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(const MyApp());
+  Widget testApp({Barcode? barcode}) {
+    return MaterialApp(
+      home: Scaffold(
+        body: BarcodeResultPanel(
+          barcode: barcode,
+          scannedAt: DateTime(2026, 9, 23, 14, 5, 9),
+          onClear: () {},
+        ),
+      ),
+    );
+  }
 
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
+  testWidgets('shows an empty state before scanning', (tester) async {
+    await tester.pumpWidget(testApp());
+    expect(find.byKey(const Key('empty-result')), findsOneWidget);
+    expect(find.text('ยังไม่พบบาร์โค้ด'), findsOneWidget);
+  });
 
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
-    await tester.pump();
+  testWidgets('shows a detected barcode value', (tester) async {
+    await tester.pumpWidget(
+      testApp(
+        barcode: Barcode(
+          rawValue: '8851234567890',
+          format: BarcodeFormat.ean13,
+        ),
+      ),
+    );
 
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+    expect(find.byKey(const Key('barcode-value')), findsOneWidget);
+    expect(find.text('8851234567890'), findsOneWidget);
+    expect(find.textContaining('EAN13'), findsOneWidget);
   });
 }
